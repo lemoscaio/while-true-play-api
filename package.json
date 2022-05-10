@@ -2,6 +2,7 @@
   "name": "projeto14-while_true_play-back",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
