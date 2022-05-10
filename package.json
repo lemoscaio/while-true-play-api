@@ -1,0 +1,27 @@
+{
+  "name": "projeto14-while_true_play-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jackie-Moraes/projeto14-while_true_play-back.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jackie-Moraes/projeto14-while_true_play-back/issues"
+  },
+  "homepage": "https://github.com/Jackie-Moraes/projeto14-while_true_play-back#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "joi": "^17.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^4.5.0"
+  }
+}
