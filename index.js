@@ -12,6 +12,7 @@ app.use(cors())
 app.use(express.json())
 
 // Routers
+app.get("/", (req, res) => {res.send("Online")})
 app.use(gamesRouter)
 app.use(usersRouter)
 
