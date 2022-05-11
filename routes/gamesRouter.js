@@ -1,5 +1,9 @@
-import { Router } from "express";
+import { Router } from "express"
 
-const gamesRouter = Router();
+import { getGameById } from "../controllers/gamesController.js"
 
-export default gamesRouter;
+const gamesRouter = Router()
+
+gamesRouter.get("/games/:id", getGameById)
+
+export default gamesRouter
