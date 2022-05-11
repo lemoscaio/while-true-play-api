@@ -1,9 +1,23 @@
 import db from "./../db.js"
 
 export async function getAllGames(req, res) {
+    // Get query strings
+    const gameTitleQuery = req.query.q
+    // Create regex for querying the database
+    const gameTitleRegex = new RegExp(`[\\.]*${gameTitleQuery}[\\.]*`, "i")
+
+    // TODO improve existing option cases instead of repeating code
     try {
         // Get games from database
-        const games = await db.collection("games").find({}).toArray()
+        let games
+        if (gameTitleQuery) {
+            games = await db
+                .collection("games")
+                .find({ title: gameTitleRegex })
+                .toArray()
+        } else {
+            games = await db.collection("games").find({}).toArray()
+        }
 
         // Return if doesn't exist
         if (!games) return res.status(404).send("Couldn't find games")
