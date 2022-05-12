@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 
 import gamesRouter from "./routes/gamesRouter.js"
 import usersRouter from "./routes/usersRouter.js"
+import checkoutRouter from "./routes/checkoutRouter.js"
 
 dotenv.config()
 
@@ -12,7 +13,9 @@ app.use(cors())
 app.use(express.json())
 
 // Routers
-app.get("/", (req, res) => {res.send("Online")})
+app.get("/", (req, res) => {
+    res.send("Online")
+})
 app.use(gamesRouter)
 app.use(usersRouter)
 app.use(checkoutRouter)
