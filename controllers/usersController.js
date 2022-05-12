@@ -22,6 +22,7 @@ export async function signUp(req, res) {
             name,
             email,
             password: passwordHash,
+            image: "",
             games: [],
         })
         // Return success.
