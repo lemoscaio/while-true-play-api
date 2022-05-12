@@ -12,6 +12,29 @@ export async function buyGame(req, res) {
         // Creating a new array with all the games the user currently possesses
         const totalGames = oldGames.concat(newGames)
 
+        // Destructuring collection
+        const gamesCollection = db.collection("games")
+
+        for (let i = 0; i < newGames.length; i++) {
+            // Current game's ID
+            const gameId = newGames[i]
+
+            // Getting current game information
+            const currentGame = await gamesCollection.findOne({ id: gameId })
+
+            // Updating amount sold of current game
+            await gamesCollection.updateOne(
+                {
+                    id: gameId,
+                },
+                {
+                    $set: {
+                        ["amount-sold"]: currentGame["amount-sold"] + 1,
+                    },
+                }
+            )
+        }
+
         // Inserting new games into user's database entry
         await db
             .collection("users")
