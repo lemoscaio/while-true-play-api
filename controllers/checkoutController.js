@@ -5,7 +5,7 @@ export async function buyGame(req, res) {
         // Destructuring request and renaming for practicity
         const { games: newGames } = req.body
         // Destructuring previous info
-        const { user } = res.locals
+        const { user, session } = res.locals
 
         // Separating object for prcticity
         const oldGames = user.games

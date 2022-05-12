@@ -28,6 +28,7 @@ export async function validateToken(req, res, next) {
         delete user.password
         // Saving user variable for later usage
         res.locals.user = user
+        res.locals.session = session
     } catch (e) {
         return res.sendStatus(500)
     }
