@@ -15,6 +15,7 @@ app.use(express.json())
 app.get("/", (req, res) => {res.send("Online")})
 app.use(gamesRouter)
 app.use(usersRouter)
+app.use(checkoutRouter)
 
 app.listen(process.env.PORT || 5000, () =>
     console.log(`Server running on port ${process.env.PORT || 5000}`)
