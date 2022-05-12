@@ -1,6 +1,9 @@
 import db from "../db.js"
+import jwt from "jsonwebtoken"
 
 export async function validateToken(req, res, next) {
+    // Requisition Destructuring
+    const { email } = req.body
     // Header Destructuring
     const { authorization } = req.headers
 
@@ -12,6 +15,8 @@ export async function validateToken(req, res, next) {
         // Checking token existence
         const session = await db.collection("sessions").findOne({ token })
         if (!session) return res.sendStatus(401)
+        // Checking token expiration date and validity
+        const data = jwt.verify(token, process.env.JWT_SECRET)
 
         // Checking if token belongs to user
         const user = await db.collection("users").findOne({

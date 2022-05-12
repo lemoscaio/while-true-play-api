@@ -1,5 +1,4 @@
 import db from "./../db.js"
-import jwt from "jsonwebtoken"
 
 export async function buyGame(req, res) {
     try {
