@@ -19,17 +19,14 @@ export async function buyGame(req, res) {
             // Current game's ID
             const gameId = newGames[i]
 
-            // Getting current game information
-            const currentGame = await gamesCollection.findOne({ id: gameId })
-
             // Updating amount sold of current game
             await gamesCollection.updateOne(
                 {
                     id: gameId,
                 },
                 {
-                    $set: {
-                        ["amount-sold"]: currentGame["amount-sold"] + 1,
+                    $inc: {
+                        "amount-sold": 1,
                     },
                 }
             )
