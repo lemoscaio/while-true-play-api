@@ -3,22 +3,35 @@ import db from "./../db.js"
 export async function getAllGames(req, res) {
     // Get query strings
     const gameTitleQuery = req.query.q
-    // Create regex for querying the database
+    const order = req.query.order
+
+    // Creating regex for querying the database
     const gameTitleRegex = new RegExp(`[\\.]*${gameTitleQuery}[\\.]*`, "i")
 
-    // TODO improve existing option cases instead of repeating code
+    // Treating order query data
+    const orderRegex = new RegExp("(\\w*):(\\w*)")
+    const orderKey = order?.match(orderRegex)[2]
+    const orderValue = order?.match(orderRegex)[1]
+    const sortDirection = (() => {
+        if (orderValue === "desc") return -1
+        else if (orderValue === "asc") return 1
+    })()
+
+    // Creating query object for database
+    const query = {
+        ...(gameTitleQuery && { title: gameTitleRegex }),
+    }
+    // Creating options object for database
+    const options = {
+        ...(order && { sort: { [orderKey]: sortDirection } }),
+    }
+
     try {
         // Get games from database
-        let games
-        if (gameTitleQuery) {
-            games = await db
-                .collection("games")
-                .find({ title: gameTitleRegex })
-                .toArray()
-        } else {
-            games = await db.collection("games").find({}).toArray()
-        }
-
+        const games = await db
+            .collection("games")
+            .find(query, options)
+            .toArray()
         // Return if doesn't exist
         if (!games) return res.status(404).send("Couldn't find games")
         // Return list of games
