@@ -4,6 +4,7 @@ export async function getAllGames(req, res) {
     // Get query strings
     const gameTitleQuery = req.query.q
     const order = req.query.order
+    const limit = parseInt(req.query.limit)
 
     // Creating regex for querying the database
     const gameTitleRegex = new RegExp(`[\\.]*${gameTitleQuery}[\\.]*`, "i")
@@ -23,6 +24,7 @@ export async function getAllGames(req, res) {
     }
     // Creating options object for database
     const options = {
+        ...(limit && { limit: limit }),
         ...(order && { sort: { [orderKey]: sortDirection } }),
     }
 
