@@ -45,29 +45,39 @@ export async function signIn(req, res) {
         const user = await usersCollection.findOne({ email: email })
 
         if (user && bcrypt.compareSync(password, user.password)) {
-            // Params for jwt token
-            const data = { email }
-            // Secret key in .env file
-            const secretKey = process.env.JWT_SECRET
-            // 15 minutes in seconds.
-            const settings = { expiresIn: 60 * 15 }
-            // Token made up by the Data, encrypted by the Secret key, expiring in 15 minutes.
-            const token = jwt.sign(data, secretKey, settings)
+            // Inserting user into the session collection
+            try {
+                const result = await db.collection("sessions").insertOne({
+                    userId: user._id,
+                })
 
-            // Inserting token into the database collection
-            await db.collection("sessions").insertOne({
-                userId: user._id,
-                token,
-            })
+                // Params for jwt token
+                const data = { sessionId: result.insertedId }
+                // Secret key in .env file
+                const secretKey = process.env.JWT_SECRET
+                // 15 minutes in seconds.
+                const secondsInMinute = 60
+                const minutes = 15
+                const settings = { expiresIn: secondsInMinute * minutes }
+                try {
+                    // Token made up by the Data, encrypted by the Secret key, expiring in 15 minutes.
+                    const token = jwt.sign(data, secretKey, settings)
 
-            // Removing sensitive information
-            delete user.password
-            delete user._id
-            // Sending necessary information
-            res.status(200).send({ user, token })
+                    // Sending necessary information
+                    res.status(200).send(token)
+                } catch (err) {
+                    res.status(500).send(
+                        "Couldn't create login token: " + e.message
+                    )
+                }
+            } catch (e) {
+                return res
+                    .status(500)
+                    .send("Couldn't create login session: " + e.message)
+            }
         } else {
             // Account/Email does not exist
-            res.status(401).send("Email or password is incorrect.")
+            return res.status(401).send("Email or password is incorrect.")
         }
     } catch (e) {
         // Connection to Database failed
