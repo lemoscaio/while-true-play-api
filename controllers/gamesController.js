@@ -66,9 +66,9 @@ export async function getGameById(req, res) {
 
             // Removing private information
             delete game._id
-            res.status(200).send(game)
+            return res.status(200).send(game)
         } else {
-            res.status(404).send()
+            return res.status(404).send()
         }
     } catch (e) {
         console.log(e)
