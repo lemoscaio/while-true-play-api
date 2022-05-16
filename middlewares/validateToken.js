@@ -28,8 +28,6 @@ export async function validateToken(req, res, next) {
                 .collection("sessions")
                 .findOne({ _id: new ObjectId(data.sessionId) })
 
-            console.log(session)
-
             if (!session) return res.status(401).send("Session not found")
 
             // Checking if token belongs to user
@@ -43,15 +41,15 @@ export async function validateToken(req, res, next) {
                 delete user.password
                 // Saving user variable for later usage
                 res.locals.userId = user._id
-                res.locals.session = session
+                res.locals.email = user.email
             } catch (e) {
                 return res.sendStatus(500)
             }
         } catch (e) {
-            return res.sendStatus(500)
+            return res.status(500).send(e)
         }
     } catch (e) {
-        return res.status(401).send("Invalid token")
+        return res.status(401).send(e.name)
     }
     // Advancing to next function
     next()

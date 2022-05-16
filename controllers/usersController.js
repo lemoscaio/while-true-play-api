@@ -15,9 +15,6 @@ export async function signUp(req, res) {
         if (exists) {
             return res.status(409).send("Email already in use.")
         }
-
-        console.log(password)
-
         // Encrypting password for security
         const passwordHash = bcrypt.hashSync(trimmedPassword, 10)
         // Inserting user into database
@@ -32,8 +29,7 @@ export async function signUp(req, res) {
         res.status(201).send("Account created succesfully.")
     } catch (e) {
         // Return connection fail event
-        console.log("Connection error! ", e)
-        res.status(500).send()
+        res.status(500).send(e)
     }
 }
 
@@ -89,7 +85,6 @@ export async function signIn(req, res) {
 
 export async function getUserInfo(req, res) {
     const { userId } = res.locals
-    console.log(userId)
 
     try {
         const usersCollection = db.collection("users")
@@ -103,9 +98,51 @@ export async function getUserInfo(req, res) {
         delete user.password
         delete user._id
 
-        console.log(user)
         return res.send(user)
     } catch (err) {
         return res.status(401).send(err)
+    }
+}
+
+export async function addGameToCart(req, res) {
+    const { userId } = res.locals
+    const { newGame } = req.body
+
+    try {
+        const usersCollection = db.collection("users")
+        const user = await usersCollection.findOne({
+            _id: userId,
+        })
+        if (!user) return res.status(404).send("User not found")
+
+        if (
+            user.gamesInCart?.some((gameInCart) => gameInCart.id === newGame.id)
+        )
+            return res.status(409).send("The game was already in the cart")
+
+        try {
+            if (!user.gamesInCart) {
+                user.gamesInCart = []
+            }
+            const newGamesInCart = [...user.gamesInCart, newGame]
+
+            const result = await usersCollection.updateOne(
+                { _id: user._id },
+                { $set: { gamesInCart: newGamesInCart } }
+            )
+
+            if (result.modifiedCount === 1 && result.matchedCount === 1) {
+                return res.status(200).send("Successfully updated")
+            } else if (
+                result.matchedCount === 1 &&
+                result.modifiedCount === 0
+            ) {
+                return res.status(400).send("Data must be different to update")
+            }
+        } catch (err) {
+            res.status(500).send(err)
+        }
+    } catch (err) {
+        res.status(500).send(err)
     }
 }

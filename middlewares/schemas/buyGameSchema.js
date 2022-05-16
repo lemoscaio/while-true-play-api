@@ -2,8 +2,7 @@ import joi from "joi"
 
 // Account information pattern
 const buyGameSchema = joi.object({
-    games: joi.array().items(joi.number()).required(),
-    email: joi.string().email().required(),
+    games: joi.array().min(1).required(),
 })
 
 export default buyGameSchema
