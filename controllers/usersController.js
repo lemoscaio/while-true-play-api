@@ -15,8 +15,10 @@ export async function signUp(req, res) {
             return res.status(409).send("Email already in use.")
         }
 
+        console.log(password)
+
         // Encrypting password for security
-        const passwordHash = bcrypt.hashSync(password, 10)
+        const passwordHash = bcrypt.hashSync(trimmedPassword, 10)
         // Inserting user into database
         await usersCollection.insertOne({
             name,

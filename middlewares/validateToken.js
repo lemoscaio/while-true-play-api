@@ -6,6 +6,14 @@ export async function validateToken(req, res, next) {
     // Header Destructuring
     const { authorization } = req.headers
 
+    const regexResult = authorization?.match(/^(Bearer )/g)
+    if (!regexResult)
+        return res
+            .status(400)
+            .send(
+                "You must pass an authorization token in the request header beginning with 'Bearer '"
+            )
+
     // Checking if token has been sent
     const token = authorization?.replace("Bearer ", "").trim()
     if (!token) return res.sendStatus(401)
