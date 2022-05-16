@@ -1,6 +1,7 @@
 import db from "./../db.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+import ObjectId from "mongodb"
 
 export async function signUp(req, res) {
     // Requisition Destructuring
@@ -59,7 +60,7 @@ export async function signIn(req, res) {
                 const secretKey = process.env.JWT_SECRET
                 // 15 minutes in seconds.
                 const secondsInMinute = 60
-                const minutes = 15
+                const minutes = 60
                 const settings = { expiresIn: secondsInMinute * minutes }
                 try {
                     // Token made up by the Data, encrypted by the Secret key, expiring in 15 minutes.
@@ -82,8 +83,29 @@ export async function signIn(req, res) {
             return res.status(401).send("Email or password is incorrect.")
         }
     } catch (e) {
-        // Connection to Database failed
-        console.log("Connection error! ", e)
         res.status(500).send()
+    }
+}
+
+export async function getUserInfo(req, res) {
+    const { userId } = res.locals
+    console.log(userId)
+
+    try {
+        const usersCollection = db.collection("users")
+
+        const user = await usersCollection.findOne({
+            _id: userId,
+        })
+
+        if (!user) return res.status(404).send("User not found")
+
+        delete user.password
+        delete user._id
+
+        console.log(user)
+        return res.send(user)
+    } catch (err) {
+        return res.status(401).send(err)
     }
 }

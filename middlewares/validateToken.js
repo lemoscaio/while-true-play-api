@@ -42,7 +42,7 @@ export async function validateToken(req, res, next) {
                 // Deleting potentially harmful information
                 delete user.password
                 // Saving user variable for later usage
-                res.locals.user = user
+                res.locals.userId = user._id
                 res.locals.session = session
             } catch (e) {
                 return res.sendStatus(500)
@@ -51,9 +51,7 @@ export async function validateToken(req, res, next) {
             return res.sendStatus(500)
         }
     } catch (e) {
-        console.log(e)
-
-        res.status(401).send("Invalid token")
+        return res.status(401).send("Invalid token")
     }
     // Advancing to next function
     next()
